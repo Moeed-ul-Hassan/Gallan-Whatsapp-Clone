@@ -1,7 +1,7 @@
 const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
 const url = require('url');
-const serverModule = require('../dist-electron/server/index.electron.js');
+const serverModule = require('../server/index.electron.js');
 
 // Keep a global reference of the window object to avoid garbage collection
 let mainWindow;
