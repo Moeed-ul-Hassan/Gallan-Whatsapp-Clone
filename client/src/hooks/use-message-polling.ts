@@ -1,37 +1,26 @@
-import { useState, useEffect, useRef } from "react";
-import { Message } from "@shared/schema";
+import { useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { queryClient } from "@/lib/queryClient";
 
-// This hook is used to simulate real-time messaging for this MVP
 export function useMessagePolling(chatId: number | null, enabled: boolean = true) {
-  const [isPolling, setIsPolling] = useState(false);
-  const pollingIntervalRef = useRef<number | null>(null);
+  // Use a polling interval
+  const pollingInterval = 3000; // 3 seconds
 
+  // The key features for message polling:
+  // 1. Regular polling for new messages in the active chat
+  // 2. Update message statuses (delivered, read)
   useEffect(() => {
-    if (!chatId || !enabled) {
-      return () => {
-        if (pollingIntervalRef.current) {
-          window.clearInterval(pollingIntervalRef.current);
-        }
-      };
-    }
+    if (!chatId || !enabled) return;
 
-    setIsPolling(true);
-
-    // Poll for new messages every 3 seconds
-    const intervalId = window.setInterval(() => {
+    // Setup interval for polling
+    const interval = setInterval(() => {
+      // Invalidate and refetch both message list and chat list
       queryClient.invalidateQueries({ queryKey: ["/api/messages", chatId] });
-    }, 3000);
+      queryClient.invalidateQueries({ queryKey: ["/api/chats"] });
+    }, pollingInterval);
 
-    pollingIntervalRef.current = intervalId;
-
-    return () => {
-      if (pollingIntervalRef.current) {
-        window.clearInterval(pollingIntervalRef.current);
-        setIsPolling(false);
-      }
-    };
+    return () => clearInterval(interval);
   }, [chatId, enabled]);
 
-  return { isPolling };
+  return null;
 }
