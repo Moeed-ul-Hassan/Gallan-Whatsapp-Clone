@@ -19,6 +19,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { useMessagePolling } from "@/hooks/use-message-polling";
+import SettingsDialog from "@/components/SettingsDialog";
 
 // Dropdowns and dialogs
 import {
@@ -38,6 +39,7 @@ import {
 } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { formatMessageTime, formatChatTime } from "@/lib/formatDate";
+import getDefaultAvatarUri, { getInitials } from "@/lib/getDefaultAvatar";
 
 function Home() {
   // Hooks
@@ -53,6 +55,7 @@ function Home() {
   const [showProfile, setShowProfile] = useState(false);
   const [showNewContact, setShowNewContact] = useState(false);
   const [showNewChat, setShowNewChat] = useState(false);
+  const [showSettings, setShowSettings] = useState(false);
   const [profileName, setProfileName] = useState("");
   const [profileStatus, setProfileStatus] = useState("");
   const [newContactUsername, setNewContactUsername] = useState("");
@@ -263,8 +266,8 @@ function Home() {
               onClick={() => setShowProfile(true)}
             >
               <Avatar className="h-10 w-10">
-                <AvatarImage src={user.avatar || undefined} alt={user.displayName} />
-                <AvatarFallback className="bg-[#00a884]">{user.displayName.substring(0, 2).toUpperCase()}</AvatarFallback>
+                <AvatarImage src={user.avatar || getDefaultAvatarUri(user.displayName)} alt={user.displayName} />
+                <AvatarFallback className="bg-[#00a884]">{getInitials(user.displayName)}</AvatarFallback>
               </Avatar>
             </div>
             <div className="flex space-x-2">
@@ -285,7 +288,7 @@ function Home() {
                     <UserCircle className="mr-2 h-4 w-4" />
                     <span>Profile</span>
                   </DropdownMenuItem>
-                  <DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => setShowSettings(true)}>
                     <Settings className="mr-2 h-4 w-4" />
                     <span>Settings</span>
                   </DropdownMenuItem>
@@ -328,9 +331,9 @@ function Home() {
                     onClick={() => setActiveChatId(chat.id)}
                   >
                     <Avatar className="h-12 w-12 mr-3">
-                      <AvatarImage src={chat.avatar || undefined} alt={chat.name || "Chat"} />
+                      <AvatarImage src={chat.avatar || getDefaultAvatarUri(chat.name)} alt={chat.name || "Chat"} />
                       <AvatarFallback className="bg-[#00a884]">
-                        {(chat.name || "Chat").substring(0, 2).toUpperCase()}
+                        {getInitials(chat.name)}
                       </AvatarFallback>
                     </Avatar>
                     <div className="flex-1 overflow-hidden border-b border-[#222d34] pb-3">
@@ -664,6 +667,9 @@ function Home() {
           )}
         </DialogContent>
       </Dialog>
+
+      {/* Settings Dialog */}
+      <SettingsDialog open={showSettings} onOpenChange={setShowSettings} />
     </div>
   );
 }
