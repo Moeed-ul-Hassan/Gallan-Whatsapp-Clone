@@ -7,7 +7,8 @@ import { Strategy as LocalStrategy } from "passport-local";
 import createMemoryStore from "memorystore";
 import bcrypt from "bcryptjs";
 import { z } from "zod";
-import { insertUserSchema, insertMessageSchema, User } from "@shared/schema";
+import { insertUserSchema, insertMessageSchema, User, Message } from "@shared/schema";
+import { generateConversationStarters, ConversationContext } from "./openai-service";
 
 const MemoryStore = createMemoryStore(session);
 
@@ -390,6 +391,62 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: error.errors });
       }
       res.status(500).json({ message: "Failed to create message" });
+    }
+  });
+  
+  // AI-powered conversation starters API
+  app.get("/api/conversation-starters/:contactId", isAuthenticated, async (req, res) => {
+    try {
+      const user = req.user as User;
+      const contactId = parseInt(req.params.contactId);
+      
+      // Get contact details
+      const contactUser = await storage.getUser(contactId);
+      if (!contactUser) {
+        return res.status(404).json({ message: "Contact not found" });
+      }
+      
+      // Check if contact exists in user's contacts
+      const contact = await storage.getContactByUserAndContactId(user.id, contactId);
+      if (!contact) {
+        return res.status(404).json({ message: "Contact not in your contacts list" });
+      }
+      
+      // Check if a chat already exists between them
+      const chat = await storage.getChatByParticipants([user.id, contactId]);
+      let recentMessages: Message[] = [];
+      
+      if (chat) {
+        // Get recent messages if any
+        recentMessages = await storage.getMessagesByChatId(chat.id);
+        // Limit to last 5 messages
+        recentMessages = recentMessages.slice(-5);
+      }
+      
+      // Determine if contact is an Islamic scholar (IDs 2 and 3 are scholars)
+      const isScholar = contactId === 2 || contactId === 3;
+      
+      // Build context for AI
+      const context: ConversationContext = {
+        user: user,
+        contact: {
+          displayName: contact.displayName,
+          status: contactUser.status || undefined,
+          isScholar: isScholar
+        },
+        recentMessages: recentMessages.length > 0 ? recentMessages : undefined
+      };
+      
+      // Generate conversation starters
+      const starters = await generateConversationStarters(context);
+      
+      res.json(starters);
+    } catch (error) {
+      console.error("Error generating conversation starters:", error);
+      res.status(500).json({ 
+        message: "Failed to generate conversation starters",
+        error: error instanceof Error ? error.message : String(error)
+      });
     }
   });
 

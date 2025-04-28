@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Smile, Paperclip, Mic, Send, Image, Camera } from "lucide-react";
+import { Smile, Paperclip, Mic, Send, Image, Camera, Lightbulb } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import ConversationStarters from "./ConversationStarters";
 
 interface MessageInputProps {
   value: string;
