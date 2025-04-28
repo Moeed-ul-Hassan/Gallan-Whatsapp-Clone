@@ -14,6 +14,30 @@ import {
 } from "@shared/schema";
 import { format } from "date-fns";
 
+// A simple localStorage API implementation for server-side use
+// This will store everything in memory but with the same API as localStorage
+const serverStorage = (() => {
+  const data: Record<string, string> = {};
+  return {
+    getItem: (key: string): string | null => {
+      return data[key] || null;
+    },
+    setItem: (key: string, value: string): void => {
+      data[key] = value;
+      console.log(`Server storage: saved data for '${key}'`);
+    },
+    removeItem: (key: string): void => {
+      delete data[key];
+    },
+    clear: (): void => {
+      Object.keys(data).forEach(key => delete data[key]);
+    }
+  };
+})();
+
+// Use either browser localStorage or server-side implementation
+const storageImpl = typeof window !== 'undefined' ? window.localStorage : serverStorage;
+
 export interface IStorage {
   // User methods
   getUser(id: number): Promise<User | undefined>;
@@ -112,16 +136,16 @@ export class MemStorage implements IStorage {
   // Helper method to load data from localStorage
   private _loadFromLocalStorage<T>(key: string, defaultValue: T): T {
     try {
-      if (typeof localStorage !== 'undefined') {
-        const data = localStorage.getItem(key);
-        if (data) {
-          // For Maps, we need to convert the array back to a Map
-          if (defaultValue instanceof Map) {
-            const parsedData = JSON.parse(data);
-            return new Map(parsedData) as unknown as T;
-          }
-          return JSON.parse(data);
+      const data = storageImpl.getItem(key);
+      if (data) {
+        // For Maps, we need to convert the array back to a Map
+        const parsedData = JSON.parse(data);
+        
+        if (defaultValue instanceof Map) {
+          return new Map(parsedData) as unknown as T;
         }
+        
+        return parsedData;
       }
     } catch (error) {
       console.error(`Error loading data from localStorage for key ${key}:`, error);
@@ -132,13 +156,15 @@ export class MemStorage implements IStorage {
   // Helper method to save data to localStorage
   private _saveToLocalStorage(key: string, data: any): void {
     try {
-      if (typeof localStorage !== 'undefined') {
-        // For Maps, we need to convert to an array first
-        if (data instanceof Map) {
-          localStorage.setItem(key, JSON.stringify(Array.from(data.entries())));
-        } else {
-          localStorage.setItem(key, JSON.stringify(data));
-        }
+      // For Maps, we need to convert to an array first
+      if (data instanceof Map) {
+        const serializedData = JSON.stringify(Array.from(data.entries()));
+        storageImpl.setItem(key, serializedData);
+        console.log(`Saved ${key} with ${data.size} items`);
+      } else {
+        const serializedData = JSON.stringify(data);
+        storageImpl.setItem(key, serializedData);
+        console.log(`Saved ${key} data:`, typeof data);
       }
     } catch (error) {
       console.error(`Error saving data to localStorage for key ${key}:`, error);
@@ -536,8 +562,22 @@ export class MemStorage implements IStorage {
   
   // Initialize demo data
   private _initializeDemoData(): void {
-    // This method can be used to initialize demo data if needed
-    // For now, keep it empty to let users create their own data
+    // Create demo user for testing
+    const demoUser = {
+      id: 1,
+      username: "demo-user",
+      password: "$2a$10$VsviCMjTlq6cNPKuRc.wDOITKdPBX2Izv/3l0qE5RkN.QGxcPGJWC", // hashed "password123"
+      displayName: "Demo User",
+      status: "Hey there! I'm using Gallan",
+      avatar: null,
+      lastSeen: new Date(),
+      isOnline: false
+    };
+    
+    this.users.set(demoUser.id, demoUser);
+    this.userId = 2; // Next user ID
+    
+    console.log("Added demo user:", demoUser.username);
   }
 }
 
