@@ -576,56 +576,56 @@ export class MemStorage implements IStorage {
     
     this.users.set(demoUser.id, demoUser);
     
-    // Create Mia and Johnny as demo users
-    const miaUser = {
+    // Create Islamic scholars as demo users
+    const muftiSamarUser = {
       id: 2,
-      username: "mia",
+      username: "mufti_samar",
       password: "$2a$10$VsviCMjTlq6cNPKuRc.wDOITKdPBX2Izv/3l0qE5RkN.QGxcPGJWC", // hashed "password123"
-      displayName: "Mia Rodriguez",
-      status: "Living life to the fullest ✨",
+      displayName: "Mufti Samar Abbas Qadri",
+      status: "إِنَّ مَعَ الْعُسْرِ يُسْرًا - With hardship comes ease",
       avatar: null,
       lastSeen: new Date(Date.now() - 25 * 60 * 1000), // 25 minutes ago
       isOnline: false
     };
     
-    const johnnyUser = {
+    const muftiNaseerUser = {
       id: 3,
-      username: "johnny",
+      username: "mufti_naseer",
       password: "$2a$10$VsviCMjTlq6cNPKuRc.wDOITKdPBX2Izv/3l0qE5RkN.QGxcPGJWC", // hashed "password123"
-      displayName: "Johnny Depp",
-      status: "Available to chat",
+      displayName: "Mufti Naseer udin Naseer",
+      status: "الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ",
       avatar: null,
       lastSeen: new Date(),
       isOnline: true
     };
     
-    this.users.set(miaUser.id, miaUser);
-    this.users.set(johnnyUser.id, johnnyUser);
+    this.users.set(muftiSamarUser.id, muftiSamarUser);
+    this.users.set(muftiNaseerUser.id, muftiNaseerUser);
     
-    // Add Mia and Johnny as contacts for the demo user
-    const miaContact = {
+    // Add Islamic scholars as contacts for the demo user
+    const samarContact = {
       id: 1,
       userId: demoUser.id,
-      contactId: miaUser.id,
-      displayName: miaUser.displayName
+      contactId: muftiSamarUser.id,
+      displayName: muftiSamarUser.displayName
     };
     
-    const johnnyContact = {
+    const naseerContact = {
       id: 2,
       userId: demoUser.id,
-      contactId: johnnyUser.id,
-      displayName: johnnyUser.displayName
+      contactId: muftiNaseerUser.id,
+      displayName: muftiNaseerUser.displayName
     };
     
-    this.contacts.set(miaContact.id, miaContact);
-    this.contacts.set(johnnyContact.id, johnnyContact);
+    this.contacts.set(samarContact.id, samarContact);
+    this.contacts.set(naseerContact.id, naseerContact);
     
     // Update the counters
     this.userId = 4; // Next user ID
     this.contactId = 3; // Next contact ID
     
     console.log("Added demo user:", demoUser.username);
-    console.log("Added demo contacts: Mia Rodriguez, Johnny Depp");
+    console.log("Added demo contacts: Mufti Samar Abbas Qadri, Mufti Naseer udin Naseer");
   }
 }
 
