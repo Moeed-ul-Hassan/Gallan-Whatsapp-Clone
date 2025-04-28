@@ -1,0 +1,13 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "outDir": "dist-electron",
+    "module": "CommonJS",
+    "target": "ES2020",
+    "esModuleInterop": true,
+    "noEmit": false,
+    "sourceMap": true
+  },
+  "include": ["server/index.electron.ts", "server/routes.ts", "server/storage.ts", "server/vite.ts", "shared/**/*.ts"],
+  "exclude": ["node_modules", "dist", "client"]
+}
