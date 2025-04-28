@@ -12,6 +12,10 @@ import { insertUserSchema, insertMessageSchema, User } from "@shared/schema";
 const MemoryStore = createMemoryStore(session);
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Serve flow diagram page
+  app.get("/flow-diagram", (req, res) => {
+    res.sendFile("flow-diagram.html", { root: "public" });
+  });
   // Configure session middleware
   app.use(
     session({

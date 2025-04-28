@@ -17,7 +17,7 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { useToast } from "@/hooks/use-toast";
-import { MessageSquare, Lock, User, Shield, Globe, CheckCheck } from "lucide-react";
+import { MessageSquare, Lock, User, Shield, Globe, CheckCheck, FileBarChart } from "lucide-react";
 
 const loginSchema = z.object({
   username: z.string().min(1, "Username is required"),
@@ -213,6 +213,18 @@ function Login() {
                 </div>
                 <h3 className="font-medium text-lg">Reliable messaging</h3>
                 <p className="text-gray-400 text-center">Fast message delivery with read receipts</p>
+              </div>
+              
+              {/* Flow Diagram Link */}
+              <div className="mt-8 flex justify-center pop-in" style={{animationDelay: '1.3s'}}>
+                <a 
+                  href="/flow-diagram" 
+                  target="_blank" 
+                  className="text-[#00a884] hover:text-[#00cf9f] transition-colors flex items-center gap-2"
+                >
+                  <FileBarChart className="h-5 w-5" />
+                  <span>View Flow Diagram</span>
+                </a>
               </div>
             </div>
           </div>
