@@ -10,6 +10,7 @@ import http from "http";
 import { storage } from "./storage";
 import { registerRoutes } from "./routes";
 import { serveStatic } from "./vite";
+import { MongoStorage } from "./mongo-storage";
 
 // Create a memory store for sessions
 const MemoryStore = createMemoryStore(session);
@@ -23,6 +24,21 @@ app.use(express.json());
 // Initialize the server
 export async function initializeServer(): Promise<http.Server> {
   try {
+    // Try to initialize MongoDB if URI is available in the environment
+    if (process.env.MONGODB_URI) {
+      console.log("Desktop app: Connecting to MongoDB...");
+      try {
+        const mongoStorage = new MongoStorage();
+        await mongoStorage.init();
+        console.log("Desktop app: Connected to MongoDB successfully");
+      } catch (mongoError) {
+        console.error("Desktop app: Failed to connect to MongoDB:", mongoError);
+        console.log("Desktop app: Falling back to in-memory storage");
+      }
+    } else {
+      console.log("Desktop app: No MongoDB URI provided, using in-memory storage");
+    }
+    
     // Register all routes
     const server = await registerRoutes(app);
     

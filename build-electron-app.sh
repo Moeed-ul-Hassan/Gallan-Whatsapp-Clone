@@ -42,6 +42,11 @@ EOL
 mkdir -p resources
 cp public/icon.svg resources/icon.svg
 
+# Additional icons for platforms that may need them
+cp public/icon.svg resources/icon.icns  # For macOS
+cp public/icon.svg resources/icon.ico   # For Windows
+cp public/icon.svg resources/icon.png   # For Linux
+
 # 8. Convert SVG to PNG (using electron-builder's default icon)
 echo "Using default app icon..."
 

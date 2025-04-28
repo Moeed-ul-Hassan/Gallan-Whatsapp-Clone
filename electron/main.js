@@ -22,7 +22,7 @@ function createWindow() {
       contextIsolation: false,
       preload: path.join(__dirname, 'preload.js'),
     },
-    icon: path.join(__dirname, '../public/icon.png'),
+    icon: path.join(__dirname, '../public/icon.svg'),
     show: false, // Don't show window until ready
     backgroundColor: '#111b21', // WhatsApp dark theme color
   });
