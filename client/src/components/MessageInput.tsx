@@ -86,7 +86,7 @@ function MessageInput({ value, onChange, onSend, onKeyDown, isLoading }: Message
         
         {/* Attachment options popup */}
         {showAttachOptions && (
-          <div className="absolute bottom-12 left-0 bg-white dark:bg-[#2A3942] rounded-lg shadow-lg p-2 z-10 flex flex-col gap-2 slide-in">
+          <div className="absolute bottom-12 left-0 bg-white dark:bg-[#2A3942] rounded-lg shadow-lg p-2 z-10 flex flex-col gap-2 pop-in">
             <Button 
               variant="ghost" 
               size="icon" 

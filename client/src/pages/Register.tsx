@@ -90,7 +90,7 @@ function Register() {
           </div>
         </div>
         
-        <Card className="w-full max-w-md shadow-xl border-none">
+        <Card className="w-full max-w-md shadow-xl border-none card-pop-in">
           <CardHeader className="space-y-1">
             <CardTitle className="text-3xl text-center font-bold">
               <span className="gradient-text">Join Gallan</span>

@@ -52,7 +52,7 @@ function Message({ message, isSent }: MessageProps) {
       <div className="max-w-[75%] relative">
         <div 
           className={cn(
-            "rounded-lg p-2 pl-3 pr-3 shadow-sm relative message-animate-in transition-all",
+            "rounded-lg p-2 pl-3 pr-3 shadow-sm relative pop-in transition-all",
             isSent 
               ? "bg-gradient-to-br from-[#DCF8C6] to-[#C4F0B5] dark:from-[#005C4B] dark:to-[#00483b] sent-bubble-tail chat-bubble-tail hover:shadow-md" 
               : "bg-white dark:bg-[#202C33] received-bubble-tail chat-bubble-tail hover:shadow-md"

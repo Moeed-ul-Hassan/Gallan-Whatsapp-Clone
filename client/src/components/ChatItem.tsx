@@ -32,9 +32,11 @@ function ChatItem({ chat, isActive, onClick }: ChatItemProps) {
       className={cn(
         "chat-item flex items-center px-4 py-3 border-b border-gray-100 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-[#202C33] cursor-pointer relative overflow-hidden",
         isActive ? "bg-gray-100 dark:bg-[#2A3942] active" : "",
-        chat.isOnline && "online-indicator"
+        chat.isOnline && "online-indicator",
+        "pop-in"
       )}
       onClick={onClick}
+      style={{animationDelay: `${Math.random() * 0.3}s`}}
     >
       <div className="relative">
         <Avatar className="transition-all hover:scale-105">
