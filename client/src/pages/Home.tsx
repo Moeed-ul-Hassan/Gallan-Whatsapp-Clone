@@ -85,8 +85,20 @@ function Home() {
     enabled: !!user,
   });
 
+  // Log contacts when they change
+  useEffect(() => {
+    if (contacts.length > 0) {
+      console.log("Contacts fetched:", contacts);
+    }
+  }, [contacts]);
+
   const { data: messages = [], isLoading: isMessagesLoading } = useQuery<Message[]>({
     queryKey: ["/api/messages", activeChatId],
+    queryFn: async () => {
+      if (!activeChatId) return [];
+      const response = await apiRequest("GET", `/api/messages/${activeChatId}`);
+      return response.json();
+    },
     enabled: !!activeChatId,
   });
 
@@ -632,24 +644,33 @@ function Home() {
             </div>
           ) : contacts.length > 0 ? (
             <div className="max-h-96 overflow-y-auto">
-              {contacts.map((contact) => (
-                <div 
-                  key={contact.contactId}
-                  className="flex items-center p-3 hover:bg-[#202c33] cursor-pointer rounded"
-                  onClick={() => handleStartChat(contact.contactId)}
-                >
-                  <Avatar className="h-12 w-12 mr-3">
-                    <AvatarImage src={contact.avatar || getDefaultAvatarUri(contact.displayName)} alt={contact.displayName} />
-                    <AvatarFallback className="bg-[#00a884]">
-                      {getInitials(contact.displayName)}
-                    </AvatarFallback>
-                  </Avatar>
-                  <div>
-                    <h3 className="font-medium text-[#e9edef]">{contact.displayName}</h3>
-                    <p className="text-sm text-[#8696a0]">{contact.status || "Hey there! I'm using Gallan"}</p>
+              {contacts.map((contact: Contact) => {
+                console.log("Rendering contact:", contact);
+                // Get user information from the contact
+                const contactUser = contact.user;
+                const displayName = contact.displayName || contactUser.displayName;
+                const avatar = contactUser.avatar;
+                const status = contactUser.status || "Hey there! I'm using Gallan";
+                
+                return (
+                  <div 
+                    key={contact.contactId}
+                    className="flex items-center p-3 hover:bg-[#202c33] cursor-pointer rounded"
+                    onClick={() => handleStartChat(contact.contactId)}
+                  >
+                    <Avatar className="h-12 w-12 mr-3">
+                      <AvatarImage src={avatar || getDefaultAvatarUri(displayName)} alt={displayName} />
+                      <AvatarFallback className="bg-[#00a884]">
+                        {getInitials(displayName)}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div>
+                      <h3 className="font-medium text-[#e9edef]">{displayName}</h3>
+                      <p className="text-sm text-[#8696a0]">{status}</p>
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           ) : (
             <div className="py-8 text-center">
