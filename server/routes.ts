@@ -77,7 +77,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   };
 
   // Auth routes
-  app.post("/api/auth/register", async (req, res) => {
+  app.post("/api/auth/register", async (req, res, next) => {
     try {
       const userData = insertUserSchema.parse(req.body);
       
@@ -96,10 +96,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
         password: hashedPassword,
       });
       
-      // Remove password from response
-      const { password, ...userWithoutPassword } = user;
-      
-      res.status(201).json(userWithoutPassword);
+      // Log the user in automatically after registration
+      req.login(user, (err) => {
+        if (err) return next(err);
+        
+        // Update user status to online
+        storage.updateUserStatus(user.id, true);
+        
+        // Remove password from response
+        const { password, ...userWithoutPassword } = user;
+        
+        res.status(201).json(userWithoutPassword);
+      });
     } catch (error) {
       if (error instanceof z.ZodError) {
         return res.status(400).json({ message: error.errors });

@@ -55,7 +55,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   async function register(userData: InsertUser) {
     setIsLoading(true);
     try {
-      await registerUser(userData);
+      const newUser = await registerUser(userData);
+      setUser(newUser); // Set the user directly since the server already logs them in
     } finally {
       setIsLoading(false);
     }
