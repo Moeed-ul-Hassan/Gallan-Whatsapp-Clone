@@ -14,7 +14,6 @@ load_dotenv()
 
 # Import our modules
 from db import get_storage
-from routes import register_routes
 
 # Initialize Flask app
 app = Flask(__name__)
@@ -26,6 +25,9 @@ socketio = SocketIO(app, cors_allowed_origins="*")
 
 # Initialize storage
 storage = get_storage()
+
+# Import routes after initializing app, socketio, and storage
+from routes import register_routes
 
 # Register API routes
 register_routes(app, storage, socketio)
@@ -155,8 +157,14 @@ def handle_read(data):
         message_status = storage.update_message_status(message_id, user_id, 'read')
         
         if message_status:
-            # Get the message
-            message = next((m for m in storage.messages.values() if m['id'] == message_id), None)
+            # Get the message from chat messages
+            chat_messages = []
+            for chat_id_str in range(1, 100):  # Attempt to get messages from chats with IDs 1-99
+                try:
+                    chat_messages.extend(storage.get_messages_by_chat_id(chat_id_str))
+                except:
+                    pass
+            message = next((m for m in chat_messages if m['id'] == message_id), None)
             
             if message:
                 # Notify sender
