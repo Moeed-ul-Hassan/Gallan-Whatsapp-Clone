@@ -17,7 +17,7 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { useToast } from "@/hooks/use-toast";
-import { MessageSquare, Lock, User, MessageCircle, Send, Users } from "lucide-react";
+import { MessageSquare, Lock, User, Shield, Globe, CheckCheck } from "lucide-react";
 
 const loginSchema = z.object({
   username: z.string().min(1, "Username is required"),
@@ -70,27 +70,28 @@ function Login() {
   }
 
   return (
-    <div className="flex min-h-screen">
-      {/* Left panel - Login form */}
-      <div className="w-full md:w-1/2 flex flex-col items-center justify-center px-6 lg:px-16 xl:px-20 bg-white dark:bg-gray-900 transition-all duration-500">
-        <div className="absolute top-4 right-4 md:left-4 md:right-auto z-10">
+    <div className="flex min-h-screen flex-col bg-[#111b21] text-white">
+      {/* WhatsApp-style header */}
+      <header className="bg-[#202c33] py-4 px-4 md:px-8">
+        <div className="container mx-auto flex justify-between items-center">
+          <div className="flex items-center">
+            <MessageSquare className="h-8 w-8 text-[#00a884] mr-2" />
+            <h1 className="text-xl font-semibold">GALLAN WEB</h1>
+          </div>
           <ThemeToggle />
         </div>
-        
-        <div className={`w-full max-w-md transform transition-all duration-500 ease-out ${animateIn ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
-          <div className="flex justify-center mb-8">
-            <div className="w-24 h-24 bg-gradient-to-r from-primary to-teal-500 rounded-full flex items-center justify-center shadow-lg pop-in" style={{animationDelay: '0.3s'}}>
-              <MessageSquare className="h-12 w-12 text-white" />
-            </div>
-          </div>
-          
-          <Card className="w-full border-none shadow-2xl card-pop-in bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm">
-            <CardHeader className="space-y-2 pb-2">
-              <CardTitle className="text-4xl text-center font-bold">
-                <span className="gradient-text">Gallan</span>
+      </header>
+      
+      <div className="flex-1 flex flex-col md:flex-row">
+        {/* Main content */}
+        <div className="w-full md:w-7/12 flex flex-col items-center justify-center p-6 md:p-12 pop-in" style={{animationDelay: '0.3s'}}>
+          <Card className="w-full max-w-md border-none bg-[#222e35] shadow-2xl">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-2xl font-bold text-white">
+                Use Gallan on your computer
               </CardTitle>
-              <CardDescription className="text-center text-base">
-                Connect and chat with friends instantly
+              <CardDescription className="text-gray-400">
+                Sign in to start messaging
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -101,7 +102,7 @@ function Login() {
                     name="username"
                     render={({ field }) => (
                       <FormItem className="space-y-1">
-                        <FormLabel className="font-medium">Username</FormLabel>
+                        <FormLabel className="text-gray-300">Username</FormLabel>
                         <div className="relative">
                           <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
                             <User className="h-5 w-5" />
@@ -109,12 +110,12 @@ function Login() {
                           <FormControl>
                             <Input 
                               placeholder="Enter your username" 
-                              className="pl-10 py-6 transition-all bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700 focus:ring-2 focus:ring-primary"
+                              className="pl-10 py-5 bg-[#2a3942] border-[#2a3942] text-white focus:ring-[#00a884] focus:border-[#00a884]"
                               {...field} 
                             />
                           </FormControl>
                         </div>
-                        <FormMessage />
+                        <FormMessage className="text-red-400" />
                       </FormItem>
                     )}
                   />
@@ -123,7 +124,7 @@ function Login() {
                     name="password"
                     render={({ field }) => (
                       <FormItem className="space-y-1">
-                        <FormLabel className="font-medium">Password</FormLabel>
+                        <FormLabel className="text-gray-300">Password</FormLabel>
                         <div className="relative">
                           <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
                             <Lock className="h-5 w-5" />
@@ -132,18 +133,18 @@ function Login() {
                             <Input 
                               type="password" 
                               placeholder="Enter your password" 
-                              className="pl-10 py-6 transition-all bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700 focus:ring-2 focus:ring-primary"
+                              className="pl-10 py-5 bg-[#2a3942] border-[#2a3942] text-white focus:ring-[#00a884] focus:border-[#00a884]"
                               {...field} 
                             />
                           </FormControl>
                         </div>
-                        <FormMessage />
+                        <FormMessage className="text-red-400" />
                       </FormItem>
                     )}
                   />
                   <Button 
                     type="submit" 
-                    className="w-full py-6 mt-2 bg-gradient-to-r from-primary to-teal-500 hover:opacity-90 transition-all animate-button shadow-md"
+                    className="w-full py-6 mt-4 bg-[#00a884] hover:bg-[#00a884]/90 text-white transition-all"
                     disabled={isLoading}
                   >
                     {isLoading ? (
@@ -155,70 +156,63 @@ function Login() {
                         </div>
                         <span className="ml-2">Signing in...</span>
                       </div>
-                    ) : "Sign In"}
+                    ) : "LOGIN"}
                   </Button>
                 </form>
               </Form>
             </CardContent>
-            <CardFooter className="flex flex-col">
-              <p className="text-sm text-center text-gray-500 dark:text-gray-400 mb-2">
+            <CardFooter className="flex flex-col pt-0">
+              <p className="text-sm text-center text-gray-400 mb-2">
                 Don't have an account?{" "}
                 <a
                   href="/register"
-                  className="gradient-text font-medium hover:opacity-80 transition-all"
+                  className="text-[#00a884] font-medium hover:underline"
                 >
-                  Sign up
+                  Create a new account
                 </a>
               </p>
-              <div className="credits mt-6">
-                <p>
-                  <span>Made by</span> <span className="gradient-text font-medium">Zylox</span>, 
-                  <span> Coded by</span> <span className="gradient-text font-medium">Moeed Mirza</span>
-                </p>
-              </div>
             </CardFooter>
           </Card>
-        </div>
-      </div>
-      
-      {/* Right panel - Hero section */}
-      <div className="hidden md:flex md:w-1/2 bg-gradient-to-br from-primary/90 to-teal-500/90 items-center justify-center relative">
-        <div className="absolute inset-0 bg-pattern opacity-10"></div>
-        
-        <div className="max-w-md p-8 text-white relative z-10">
-          <div className="mb-8 pop-in" style={{animationDelay: '0.5s'}}>
-            <h2 className="text-4xl font-bold mb-4">Welcome to Gallan</h2>
-            <p className="text-lg opacity-90">Your modern messaging platform for seamless communication</p>
-          </div>
           
-          <div className="space-y-6">
-            <div className="flex items-start space-x-4 pop-in" style={{animationDelay: '0.7s'}}>
-              <div className="bg-white/20 p-2 rounded-full backdrop-blur-sm">
-                <MessageCircle className="h-6 w-6" />
-              </div>
-              <div>
-                <h3 className="font-semibold text-xl mb-1">Real-time Messaging</h3>
-                <p className="opacity-80">Send and receive messages instantly with friends and family</p>
-              </div>
+          <div className="mt-8 text-center text-gray-400 text-sm">
+            <p>
+              <span>Made by</span> <span className="text-[#00a884] font-medium">Zylox</span>, 
+              <span> Coded by</span> <span className="text-[#00a884] font-medium">Moeed Mirza</span>
+            </p>
+          </div>
+        </div>
+        
+        {/* Tutorial Panel */}
+        <div className="hidden md:flex md:w-5/12 bg-[#222e35] flex-col items-center justify-center p-8 border-l border-[#394045]">
+          <div className="max-w-md space-y-12 pop-in" style={{animationDelay: '0.5s'}}>
+            <div className="text-center">
+              <h2 className="text-2xl font-bold mb-2">Welcome to Gallan Web</h2>
+              <p className="text-gray-400">A simple, reliable way to text chat with friends</p>
             </div>
             
-            <div className="flex items-start space-x-4 pop-in" style={{animationDelay: '0.9s'}}>
-              <div className="bg-white/20 p-2 rounded-full backdrop-blur-sm">
-                <Users className="h-6 w-6" />
+            <div className="space-y-8">
+              <div className="flex flex-col items-center space-y-3 pop-in" style={{animationDelay: '0.7s'}}>
+                <div className="bg-[#00a884] p-3 rounded-full">
+                  <Shield className="h-7 w-7 text-white" />
+                </div>
+                <h3 className="font-medium text-lg">End-to-end encrypted</h3>
+                <p className="text-gray-400 text-center">Your personal messages are secured</p>
               </div>
-              <div>
-                <h3 className="font-semibold text-xl mb-1">Easy Contact Management</h3>
-                <p className="opacity-80">Organize and manage your contacts efficiently</p>
+              
+              <div className="flex flex-col items-center space-y-3 pop-in" style={{animationDelay: '0.9s'}}>
+                <div className="bg-[#00a884] p-3 rounded-full">
+                  <Globe className="h-7 w-7 text-white" />
+                </div>
+                <h3 className="font-medium text-lg">Works on all devices</h3>
+                <p className="text-gray-400 text-center">Compatible with smartphones and computers</p>
               </div>
-            </div>
-            
-            <div className="flex items-start space-x-4 pop-in" style={{animationDelay: '1.1s'}}>
-              <div className="bg-white/20 p-2 rounded-full backdrop-blur-sm">
-                <Send className="h-6 w-6" />
-              </div>
-              <div>
-                <h3 className="font-semibold text-xl mb-1">Media Sharing</h3>
-                <p className="opacity-80">Share photos, videos, and files with your contacts</p>
+              
+              <div className="flex flex-col items-center space-y-3 pop-in" style={{animationDelay: '1.1s'}}>
+                <div className="bg-[#00a884] p-3 rounded-full">
+                  <CheckCheck className="h-7 w-7 text-white" />
+                </div>
+                <h3 className="font-medium text-lg">Reliable messaging</h3>
+                <p className="text-gray-400 text-center">Fast message delivery with read receipts</p>
               </div>
             </div>
           </div>
