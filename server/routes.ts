@@ -96,6 +96,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
         password: hashedPassword,
       });
       
+      // Add Islamic scholar contacts for ALL new users
+      try {
+        // Create contact for Mufti Samar Abbas Qadri (ID: 2)
+        await storage.createContact({
+          userId: user.id,
+          contactId: 2, // mufti_samar
+          displayName: "Mufti Samar Abbas Qadri"
+        });
+        
+        // Create contact for Mufti Naseer udin Naseer (ID: 3)
+        await storage.createContact({
+          userId: user.id,
+          contactId: 3, // mufti_naseer
+          displayName: "Mufti Naseer udin Naseer" 
+        });
+        
+        console.log(`Added Islamic scholar contacts for new user: ${user.username}`);
+      } catch (contactError) {
+        console.error("Error adding Islamic scholar contacts:", contactError);
+      }
+      
       // Log the user in automatically after registration
       req.login(user, (err) => {
         if (err) return next(err);
