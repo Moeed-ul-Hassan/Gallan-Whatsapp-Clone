@@ -11,11 +11,13 @@ interface MessageInputProps {
   onSend: () => void;
   onKeyDown: (e: React.KeyboardEvent) => void;
   isLoading: boolean;
+  contactId?: number;
 }
 
-function MessageInput({ value, onChange, onSend, onKeyDown, isLoading }: MessageInputProps) {
+function MessageInput({ value, onChange, onSend, onKeyDown, isLoading, contactId }: MessageInputProps) {
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [showAttachOptions, setShowAttachOptions] = useState(false);
+  const [showConversationStarters, setShowConversationStarters] = useState(false);
   const { toast } = useToast();
   const [isInputFocused, setIsInputFocused] = useState(false);
 
@@ -63,6 +65,28 @@ function MessageInput({ value, onChange, onSend, onKeyDown, isLoading }: Message
     });
   };
 
+  // Handle conversation starter button click
+  const handleShowConversationStarters = () => {
+    if (!contactId) {
+      toast({
+        description: "Please select a contact to get conversation starters",
+        variant: "destructive"
+      });
+      return;
+    }
+    setShowConversationStarters(!showConversationStarters);
+  };
+
+  // Handle selecting a conversation starter
+  const handleSelectStarter = (text: string) => {
+    const event = {
+      target: { value: text },
+      currentTarget: { value: text }
+    } as unknown as React.ChangeEvent<HTMLInputElement>;
+    
+    onChange(event);
+  };
+
   return (
     <div className="bg-gray-100 dark:bg-[#202C33] p-3 flex items-center relative">
       <Button 
@@ -72,6 +96,17 @@ function MessageInput({ value, onChange, onSend, onKeyDown, isLoading }: Message
         className="text-zinc-500 dark:text-zinc-400 mr-2 animate-button hover:text-primary hover:bg-transparent"
       >
         <Smile className="h-5 w-5 transition-all hover:scale-110" />
+      </Button>
+      
+      {/* AI Conversation Starters Button */}
+      <Button 
+        variant="ghost" 
+        size="icon" 
+        onClick={handleShowConversationStarters}
+        className="text-zinc-500 dark:text-zinc-400 mr-2 animate-button hover:text-primary hover:bg-transparent"
+        title="AI Conversation Starters"
+      >
+        <Lightbulb className="h-5 w-5 transition-all hover:scale-110" />
       </Button>
       
       {/* Attach Button with Options */}
@@ -151,6 +186,15 @@ function MessageInput({ value, onChange, onSend, onKeyDown, isLoading }: Message
         >
           <Mic className="h-5 w-5 transition-all hover:scale-110" />
         </Button>
+      )}
+      
+      {/* AI Conversation Starters */}
+      {showConversationStarters && contactId && (
+        <ConversationStarters
+          contactId={contactId}
+          onSelectStarter={handleSelectStarter}
+          onClose={() => setShowConversationStarters(false)}
+        />
       )}
       
       {/* Credits - Made by Zylox, Coded by Moeed Mirza */}

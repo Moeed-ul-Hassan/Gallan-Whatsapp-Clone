@@ -100,6 +100,7 @@ function ChatArea({ chat, messages, isLoading, onGoBack, isMobile }: ChatAreaPro
         onSend={handleSendMessage}
         onKeyDown={handleKeyDown}
         isLoading={sendMessageMutation.isPending}
+        contactId={chat.id}
       />
     </main>
   );
