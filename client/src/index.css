@@ -1,0 +1,163 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: 0 0% 100%;
+  --foreground: 20 14.3% 4.1%;
+  --muted: 60 4.8% 95.9%;
+  --muted-foreground: 25 5.3% 44.7%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 20 14.3% 4.1%;
+  --card: 0 0% 100%;
+  --card-foreground: 20 14.3% 4.1%;
+  --border: 20 5.9% 90%;
+  --input: 20 5.9% 90%;
+  --primary: 142 70% 45%;
+  --primary-foreground: 211 100% 99%;
+  --secondary: 60 4.8% 95.9%;
+  --secondary-foreground: 24 9.8% 10%;
+  --accent: 60 4.8% 95.9%;
+  --accent-foreground: 24 9.8% 10%;
+  --destructive: 0 84.2% 60.2%;
+  --destructive-foreground: 60 9.1% 97.8%;
+  --ring: 20 14.3% 4.1%;
+  --chart-1: var(--primary);
+  --chart-2: 180 70% 45%;
+  --chart-3: 215 70% 45%;
+  --chart-4: 25 70% 45%;
+  --chart-5: 270 70% 45%;
+  --radius: 0.5rem;
+  
+  --chat-bg-light: 39 12% 83%;
+  --chat-bg-dark: 210 22% 7%;
+  
+  --bubble-sent-light: 114 54% 88%;
+  --bubble-sent-dark: 162 48% 18%;
+  --bubble-received-light: 0 0% 100%;
+  --bubble-received-dark: 204 13% 16%;
+  
+  --status-online: 142 70% 45%;
+  --status-read: 199 82% 57%;
+  --status-delivered: 0 0% 63%;
+  --status-sent: 0 0% 90%;
+}
+
+.dark {
+  --background: 240 10% 3.9%;
+  --foreground: 0 0% 98%;
+  --muted: 240 3.7% 15.9%;
+  --muted-foreground: 240 5% 64.9%;
+  --popover: 240 10% 3.9%;
+  --popover-foreground: 0 0% 98%;
+  --card: 240 10% 3.9%;
+  --card-foreground: 0 0% 98%;
+  --border: 240 3.7% 15.9%;
+  --input: 240 3.7% 15.9%;
+  --primary: 142 70% 45%;
+  --primary-foreground: 211 100% 99%;
+  --secondary: 240 3.7% 15.9%;
+  --secondary-foreground: 0 0% 98%;
+  --accent: 240 3.7% 15.9%;
+  --accent-foreground: 0 0% 98%;
+  --destructive: 0 62.8% 30.6%;
+  --destructive-foreground: 0 0% 98%;
+  --ring: 240 4.9% 83.9%;
+  --radius: 0.5rem;
+  
+  --sidebar-background: 204 13% 16%;
+  --sidebar-foreground: 0 0% 93%;
+  --sidebar-primary: 142 70% 45%;
+  --sidebar-primary-foreground: 0 0% 100%;
+  --sidebar-accent: 204 13% 18%;
+  --sidebar-accent-foreground: 0 0% 93%;
+  --sidebar-border: 240 3.7% 15.9%;
+  --sidebar-ring: 240 4.9% 83.9%;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply font-sans antialiased bg-background text-foreground;
+    overflow: hidden;
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* Chat bubble tails */
+.chat-bubble-tail::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  width: 12px;
+  height: 20px;
+}
+.sent-bubble-tail::before {
+  right: -12px;
+  border-radius: 0 0 0 16px;
+  box-shadow: -10px 0 0 0 hsl(var(--bubble-sent-light));
+}
+.dark .sent-bubble-tail::before {
+  box-shadow: -10px 0 0 0 hsl(var(--bubble-sent-dark));
+}
+.received-bubble-tail::before {
+  left: -12px;
+  border-radius: 0 0 16px 0;
+  box-shadow: 10px 0 0 0 hsl(var(--bubble-received-light));
+}
+.dark .received-bubble-tail::before {
+  box-shadow: 10px 0 0 0 hsl(var(--bubble-received-dark));
+}
+
+.typing-indicator {
+  display: flex;
+  align-items: center;
+  column-gap: 4px;
+}
+
+.typing-indicator span {
+  height: 8px;
+  width: 8px;
+  background-color: #667781;
+  border-radius: 50%;
+  display: block;
+  opacity: 0.4;
+}
+
+.typing-indicator span:nth-child(1) {
+  animation: bouncing 1s infinite;
+}
+
+.typing-indicator span:nth-child(2) {
+  animation: bouncing 1s infinite 0.2s;
+}
+
+.typing-indicator span:nth-child(3) {
+  animation: bouncing 1s infinite 0.4s;
+}
+
+@keyframes bouncing {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
