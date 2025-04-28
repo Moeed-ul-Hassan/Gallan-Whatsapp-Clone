@@ -63,23 +63,102 @@ export class MemStorage implements IStorage {
   private messageId: number;
   private messageStatusId: number;
 
+  // Storage keys for localStorage
+  private readonly STORAGE_KEYS = {
+    USERS: 'whatsapp_clone_users',
+    CONTACTS: 'whatsapp_clone_contacts',
+    CHATS: 'whatsapp_clone_chats',
+    CHAT_PARTICIPANTS: 'whatsapp_clone_chat_participants',
+    MESSAGES: 'whatsapp_clone_messages',
+    MESSAGE_STATUSES: 'whatsapp_clone_message_statuses',
+    COUNTERS: 'whatsapp_clone_counters'
+  };
+
   constructor() {
-    this.users = new Map();
-    this.contacts = new Map();
-    this.chats = new Map();
-    this.chatParticipants = new Map();
-    this.messages = new Map();
-    this.messageStatuses = new Map();
+    // Initialize from localStorage if available, otherwise create new Maps
+    this.users = this._loadFromLocalStorage(this.STORAGE_KEYS.USERS, new Map<number, User>());
+    this.contacts = this._loadFromLocalStorage(this.STORAGE_KEYS.CONTACTS, new Map<number, Contact>());
+    this.chats = this._loadFromLocalStorage(this.STORAGE_KEYS.CHATS, new Map<number, Chat>());
+    this.chatParticipants = this._loadFromLocalStorage(this.STORAGE_KEYS.CHAT_PARTICIPANTS, new Map<number, ChatParticipant>());
+    this.messages = this._loadFromLocalStorage(this.STORAGE_KEYS.MESSAGES, new Map<number, Message>());
+    this.messageStatuses = this._loadFromLocalStorage(this.STORAGE_KEYS.MESSAGE_STATUSES, new Map<number, MessageStatus>());
     
-    this.userId = 1;
-    this.contactId = 1;
-    this.chatId = 1;
-    this.chatParticipantId = 1;
-    this.messageId = 1;
-    this.messageStatusId = 1;
+    // Load counters from localStorage or initialize
+    const counters = this._loadFromLocalStorage(this.STORAGE_KEYS.COUNTERS, {
+      userId: 1,
+      contactId: 1,
+      chatId: 1,
+      chatParticipantId: 1,
+      messageId: 1,
+      messageStatusId: 1
+    });
+    
+    this.userId = counters.userId;
+    this.contactId = counters.contactId;
+    this.chatId = counters.chatId;
+    this.chatParticipantId = counters.chatParticipantId;
+    this.messageId = counters.messageId;
+    this.messageStatusId = counters.messageStatusId;
     
     // Add some demo data if needed
-    this._initializeDemoData();
+    if (this.users.size === 0) {
+      this._initializeDemoData();
+    }
+  }
+  
+  // Helper method to load data from localStorage
+  private _loadFromLocalStorage<T>(key: string, defaultValue: T): T {
+    try {
+      if (typeof localStorage !== 'undefined') {
+        const data = localStorage.getItem(key);
+        if (data) {
+          // For Maps, we need to convert the array back to a Map
+          if (defaultValue instanceof Map) {
+            const parsedData = JSON.parse(data);
+            return new Map(parsedData) as unknown as T;
+          }
+          return JSON.parse(data);
+        }
+      }
+    } catch (error) {
+      console.error(`Error loading data from localStorage for key ${key}:`, error);
+    }
+    return defaultValue;
+  }
+  
+  // Helper method to save data to localStorage
+  private _saveToLocalStorage(key: string, data: any): void {
+    try {
+      if (typeof localStorage !== 'undefined') {
+        // For Maps, we need to convert to an array first
+        if (data instanceof Map) {
+          localStorage.setItem(key, JSON.stringify(Array.from(data.entries())));
+        } else {
+          localStorage.setItem(key, JSON.stringify(data));
+        }
+      }
+    } catch (error) {
+      console.error(`Error saving data to localStorage for key ${key}:`, error);
+    }
+  }
+  
+  // Helper method to save all data
+  private _saveAllData(): void {
+    this._saveToLocalStorage(this.STORAGE_KEYS.USERS, this.users);
+    this._saveToLocalStorage(this.STORAGE_KEYS.CONTACTS, this.contacts);
+    this._saveToLocalStorage(this.STORAGE_KEYS.CHATS, this.chats);
+    this._saveToLocalStorage(this.STORAGE_KEYS.CHAT_PARTICIPANTS, this.chatParticipants);
+    this._saveToLocalStorage(this.STORAGE_KEYS.MESSAGES, this.messages);
+    this._saveToLocalStorage(this.STORAGE_KEYS.MESSAGE_STATUSES, this.messageStatuses);
+    
+    this._saveToLocalStorage(this.STORAGE_KEYS.COUNTERS, {
+      userId: this.userId,
+      contactId: this.contactId,
+      chatId: this.chatId,
+      chatParticipantId: this.chatParticipantId,
+      messageId: this.messageId,
+      messageStatusId: this.messageStatusId
+    });
   }
 
   // User methods
@@ -103,6 +182,7 @@ export class MemStorage implements IStorage {
       isOnline: false,
     };
     this.users.set(id, user);
+    this._saveAllData(); // Save to localStorage
     return user;
   }
   
@@ -113,6 +193,7 @@ export class MemStorage implements IStorage {
     }
     const updatedUser = { ...user, ...data };
     this.users.set(id, updatedUser);
+    this._saveAllData(); // Save to localStorage
     return updatedUser;
   }
   
@@ -127,6 +208,7 @@ export class MemStorage implements IStorage {
       lastSeen: isOnline ? user.lastSeen : new Date()
     };
     this.users.set(id, updatedUser);
+    this._saveAllData(); // Save to localStorage
     return updatedUser;
   }
 
@@ -171,6 +253,7 @@ export class MemStorage implements IStorage {
       avatar: contactUser.avatar,
     };
     this.contacts.set(id, contact);
+    this._saveAllData(); // Save to localStorage
     return contact;
   }
 
@@ -290,6 +373,7 @@ export class MemStorage implements IStorage {
       lastSeen: null,
     };
     this.chats.set(id, chat);
+    this._saveAllData(); // Save to localStorage
     return chat;
   }
 
