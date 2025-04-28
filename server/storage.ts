@@ -49,7 +49,8 @@ export interface IStorage {
 }
 
 export class MemStorage implements IStorage {
-  private users: Map<number, User>;
+  // Making users public to help debugging
+  public users: Map<number, User>;
   private contacts: Map<number, Contact>;
   private chats: Map<number, Chat>;
   private chatParticipants: Map<number, ChatParticipant>;
@@ -104,6 +105,8 @@ export class MemStorage implements IStorage {
     if (this.users.size === 0) {
       this._initializeDemoData();
     }
+    
+    console.log("Storage initialized with users:", Array.from(this.users.values()).map(u => ({ id: u.id, username: u.username })));
   }
   
   // Helper method to load data from localStorage
