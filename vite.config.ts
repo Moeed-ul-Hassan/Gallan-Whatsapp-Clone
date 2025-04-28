@@ -4,6 +4,12 @@ import path from "path";
 import runtimeErrorOverlay from "@replit/vite-plugin-runtime-error-modal";
 
 export default defineConfig({
+  server: {
+    hmr: {
+      timeout: 5000,
+      overlay: true
+    },
+  },
   plugins: [
     react(),
     runtimeErrorOverlay(),
