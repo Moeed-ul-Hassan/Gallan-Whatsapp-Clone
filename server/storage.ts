@@ -392,6 +392,7 @@ export class MemStorage implements IStorage {
       joinedAt: now,
     };
     this.chatParticipants.set(id, participant);
+    this._saveAllData(); // Save to localStorage
     return participant;
   }
   
@@ -430,6 +431,7 @@ export class MemStorage implements IStorage {
       });
     }
     
+    this._saveAllData(); // Save to localStorage
     return message;
   }
 
@@ -453,6 +455,7 @@ export class MemStorage implements IStorage {
     // Update the message status if all participants have received/read it
     this._updateMessageStatusIfAll(statusData.messageId);
     
+    this._saveAllData(); // Save to localStorage
     return status;
   }
   
@@ -470,6 +473,7 @@ export class MemStorage implements IStorage {
       // Update the message status if all participants have received/read it
       this._updateMessageStatusIfAll(messageId);
       
+      this._saveAllData(); // Save to localStorage
       return updatedStatus;
     }
     
@@ -522,6 +526,9 @@ export class MemStorage implements IStorage {
         });
       }
     }
+    
+    // Save all changes to localStorage
+    this._saveAllData();
   }
   
   // Initialize demo data
