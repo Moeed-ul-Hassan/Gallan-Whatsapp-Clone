@@ -575,9 +575,57 @@ export class MemStorage implements IStorage {
     };
     
     this.users.set(demoUser.id, demoUser);
-    this.userId = 2; // Next user ID
+    
+    // Create Mia and Johnny as demo users
+    const miaUser = {
+      id: 2,
+      username: "mia",
+      password: "$2a$10$VsviCMjTlq6cNPKuRc.wDOITKdPBX2Izv/3l0qE5RkN.QGxcPGJWC", // hashed "password123"
+      displayName: "Mia Rodriguez",
+      status: "Living life to the fullest ✨",
+      avatar: null,
+      lastSeen: new Date(Date.now() - 25 * 60 * 1000), // 25 minutes ago
+      isOnline: false
+    };
+    
+    const johnnyUser = {
+      id: 3,
+      username: "johnny",
+      password: "$2a$10$VsviCMjTlq6cNPKuRc.wDOITKdPBX2Izv/3l0qE5RkN.QGxcPGJWC", // hashed "password123"
+      displayName: "Johnny Depp",
+      status: "Available to chat",
+      avatar: null,
+      lastSeen: new Date(),
+      isOnline: true
+    };
+    
+    this.users.set(miaUser.id, miaUser);
+    this.users.set(johnnyUser.id, johnnyUser);
+    
+    // Add Mia and Johnny as contacts for the demo user
+    const miaContact = {
+      id: 1,
+      userId: demoUser.id,
+      contactId: miaUser.id,
+      displayName: miaUser.displayName
+    };
+    
+    const johnnyContact = {
+      id: 2,
+      userId: demoUser.id,
+      contactId: johnnyUser.id,
+      displayName: johnnyUser.displayName
+    };
+    
+    this.contacts.set(miaContact.id, miaContact);
+    this.contacts.set(johnnyContact.id, johnnyContact);
+    
+    // Update the counters
+    this.userId = 4; // Next user ID
+    this.contactId = 3; // Next contact ID
     
     console.log("Added demo user:", demoUser.username);
+    console.log("Added demo contacts: Mia Rodriguez, Johnny Depp");
   }
 }
 
