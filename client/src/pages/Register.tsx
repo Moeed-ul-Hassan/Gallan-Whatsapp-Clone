@@ -93,7 +93,7 @@ function Register() {
         <Card className="w-full max-w-md shadow-xl border-none">
           <CardHeader className="space-y-1">
             <CardTitle className="text-3xl text-center font-bold">
-              <span className="gradient-text">Create Account</span>
+              <span className="gradient-text">Join Gallan</span>
             </CardTitle>
             <CardDescription className="text-center">
               Enter your information to sign up

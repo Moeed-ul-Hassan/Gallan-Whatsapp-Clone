@@ -139,13 +139,38 @@
 }
 
 /* Message animations */
+/* Enhanced pop-in/pop-out animations */
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
+@keyframes popIn {
+  0% { opacity: 0; transform: scale(0.8); }
+  70% { transform: scale(1.05); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+@keyframes popOut {
+  0% { opacity: 1; transform: scale(1); }
+  30% { opacity: 1; transform: scale(1.05); }
+  100% { opacity: 0; transform: scale(0.8); }
+}
+
+.pop-in {
+  animation: popIn 0.4s cubic-bezier(0.17, 0.67, 0.3, 1.33) forwards;
+}
+
+.pop-out {
+  animation: popOut 0.3s cubic-bezier(0.17, 0.67, 0.3, 1.33) forwards;
+}
+
 .message-animate-in {
   animation: fadeIn 0.3s ease-out forwards;
+}
+
+.card-pop-in {
+  animation: popIn 0.5s cubic-bezier(0.17, 0.67, 0.3, 1.33) forwards;
 }
 
 /* Button and interactive element animations */

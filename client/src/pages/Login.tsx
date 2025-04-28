@@ -85,7 +85,7 @@ function Login() {
         <Card className="w-full max-w-md shadow-xl border-none">
           <CardHeader className="space-y-1">
             <CardTitle className="text-3xl text-center font-bold">
-              <span className="gradient-text">WhatsApp Clone</span>
+              <span className="gradient-text">Gallan</span>
             </CardTitle>
             <CardDescription className="text-center">
               Enter your credentials to sign in
