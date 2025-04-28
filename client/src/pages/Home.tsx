@@ -394,9 +394,9 @@ function Home() {
                   </Button>
                 )}
                 <Avatar className="h-10 w-10 mr-3">
-                  <AvatarImage src={activeChat.avatar || undefined} alt={activeChat.name || "Chat"} />
+                  <AvatarImage src={activeChat.avatar || getDefaultAvatarUri(activeChat.name)} alt={activeChat.name || "Chat"} />
                   <AvatarFallback className="bg-[#00a884]">
-                    {(activeChat.name || "Chat").substring(0, 2).toUpperCase()}
+                    {getInitials(activeChat.name)}
                   </AvatarFallback>
                 </Avatar>
                 <div>
@@ -537,9 +537,9 @@ function Home() {
           </DialogHeader>
           <div className="flex flex-col items-center my-4">
             <Avatar className="w-24 h-24">
-              <AvatarImage src={user.avatar || undefined} alt={user.displayName} />
+              <AvatarImage src={user.avatar || getDefaultAvatarUri(user.displayName)} alt={user.displayName} />
               <AvatarFallback className="bg-[#00a884] text-xl">
-                {user.displayName.substring(0, 2).toUpperCase()}
+                {getInitials(user.displayName)}
               </AvatarFallback>
             </Avatar>
           </div>
@@ -639,9 +639,9 @@ function Home() {
                   onClick={() => handleStartChat(contact.contactId)}
                 >
                   <Avatar className="h-12 w-12 mr-3">
-                    <AvatarImage src={contact.avatar || undefined} alt={contact.displayName} />
+                    <AvatarImage src={contact.avatar || getDefaultAvatarUri(contact.displayName)} alt={contact.displayName} />
                     <AvatarFallback className="bg-[#00a884]">
-                      {contact.displayName.substring(0, 2).toUpperCase()}
+                      {getInitials(contact.displayName)}
                     </AvatarFallback>
                   </Avatar>
                   <div>
