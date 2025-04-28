@@ -1,10 +1,14 @@
 #!/usr/bin/env python3
+"""
+Main entry point for the WhatsApp clone Python backend.
+"""
 import os
+from dotenv import load_dotenv
 from app import app, socketio
 
-if __name__ == "__main__":
-    # Get port from environment variable or use default
-    port = int(os.environ.get("PORT", 5000))
-    
-    # Use 0.0.0.0 to make the server accessible from outside
-    socketio.run(app, host="0.0.0.0", port=port, debug=True)
+# Load environment variables
+load_dotenv()
+
+if __name__ == '__main__':
+    port = int(os.getenv('PORT', 5001))
+    socketio.run(app, host='0.0.0.0', port=port, debug=True, allow_unsafe_werkzeug=True)

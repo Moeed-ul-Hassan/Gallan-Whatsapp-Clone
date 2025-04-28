@@ -1,35 +1,40 @@
+#!/usr/bin/env python3
+"""OpenAI integration service for the WhatsApp clone application."""
 import os
 import json
-from typing import Dict, Any, List, Optional, Union
-from datetime import datetime
+import time
+from typing import Dict, List, Any, Optional
 import openai
 from dotenv import load_dotenv
 
 # Load environment variables
 load_dotenv()
 
-# Configure OpenAI client
-client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+# Set up OpenAI API key
+openai.api_key = os.getenv("OPENAI_API_KEY")
 
 class ConversationContext:
     """Class to store conversation context for OpenAI API"""
     
     def __init__(self, user: Dict[str, Any], contact: Dict[str, Any], recent_messages: Optional[List[Dict[str, Any]]] = None):
+        """Initialize conversation context"""
         self.user = user
         self.contact = contact
-        self.recent_messages = recent_messages
+        self.recent_messages = recent_messages or []
 
 class ConversationStarter:
     """Class to store conversation starter data"""
     
     def __init__(self, text: str, category: str):
+        """Initialize conversation starter"""
         self.text = text
         self.category = category
     
     def to_dict(self) -> Dict[str, str]:
+        """Convert to dictionary"""
         return {
-            "text": self.text,
-            "category": self.category
+            'text': self.text,
+            'category': self.category
         }
 
 def generate_conversation_starters(context: ConversationContext) -> List[Dict[str, str]]:
@@ -38,25 +43,18 @@ def generate_conversation_starters(context: ConversationContext) -> List[Dict[st
         # Build prompt based on available context
         prompt = build_prompt(context)
         
-        # Call OpenAI API with prompt
-        response = client.chat.completions.create(
-            model="gpt-4o", # the newest OpenAI model is "gpt-4o" which was released May 13, 2024
+        # Call OpenAI API
+        response = openai.chat.completions.create(
+            model="gpt-4o",  # the newest OpenAI model is "gpt-4o" which was released May 13, 2024. do not change this unless explicitly requested by the user
             messages=[
                 {
                     "role": "system",
-                    "content": 
-                    """You are an expert assistant for an Islamic messaging app that helps users craft thoughtful message starters.
-                     Generate 5 conversation starters based on the provided context. Make them diverse, respectful, and appropriate.
-                     Focus especially on religious and scholarly conversation starters if the contact is identified as a scholar.
-                     Each starter should have a corresponding category: "greeting", "question", "religious", or "general".
-                     Craft starters that are brief (under 80 characters) and natural sounding.
-                     Return in JSON format like this:
-                     [
-                       {"text": "Assalamu alaikum, how are you today?", "category": "greeting"},
-                       {"text": "What's your opinion on [relevant topic]?", "category": "question"},
-                       ...
-                     ]
-                     Don't use placeholders like [relevant topic]. Be specific based on context."""
+                    "content": (
+                        "You are a helpful assistant that generates conversation starters based on context. "
+                        "Generate a list of 5 conversation starters that a user could use to start a conversation with another person. "
+                        "Each starter should be categorized as one of: greeting, question, religious, general. "
+                        "Respond with a JSON array where each object has 'text' and 'category' fields."
+                    )
                 },
                 {
                     "role": "user",
@@ -66,68 +64,112 @@ def generate_conversation_starters(context: ConversationContext) -> List[Dict[st
             response_format={"type": "json_object"}
         )
         
-        # Parse and return the conversation starters
-        content = response.choices[0].message.content
-        if not content:
+        # Parse response
+        result = json.loads(response.choices[0].message.content)
+        
+        # Extract conversation starters
+        starters = result.get('starters', [])
+        
+        # Validate and return starters
+        if not starters or len(starters) == 0:
+            # Fallback to default starters
             return get_default_starters(context)
         
-        try:
-            parsed = json.loads(content)
-            starters = parsed.get("starters", parsed)
-            return starters
-        except json.JSONDecodeError:
-            print(f"Error parsing OpenAI response: {content}")
-            return get_default_starters(context)
+        return starters
     
     except Exception as e:
         print(f"Error generating conversation starters: {e}")
+        # Fallback to default starters
         return get_default_starters(context)
 
 def build_prompt(context: ConversationContext) -> str:
     """Build a detailed prompt based on available context"""
-    user_name = context.user.get("displayName", context.user.get("username", "User"))
-    contact_name = context.contact.get("displayName", "Contact")
+    user_name = context.user.get('displayName', 'User')
+    contact_name = context.contact.get('displayName', 'Contact')
+    contact_status = context.contact.get('status', '')
+    is_scholar = context.contact.get('isScholar', False)
     
-    prompt = f"Generate conversation starters for a user named {user_name} to send to {contact_name}."
+    # Build base prompt
+    prompt = (
+        f"I need conversation starters for a chat between {user_name} and {contact_name}. "
+        f"The contact's status message is: '{contact_status}'. "
+    )
     
-    if context.contact.get("isScholar"):
-        prompt += f" {contact_name} is an Islamic scholar the user may want to consult about religious topics."
+    # Add context about the contact being a scholar
+    if is_scholar:
+        prompt += (
+            f"{contact_name} is an Islamic scholar. "
+            "The starters should be respectful and can include relevant religious topics. "
+            "Include at least 2 religiously appropriate conversation starters. "
+        )
     
-    if context.contact.get("status"):
-        prompt += f" {contact_name}'s status is: \"{context.contact.get('status')}\"."
-    
+    # Add context from recent messages if available
     if context.recent_messages and len(context.recent_messages) > 0:
-        prompt += " Their most recent conversation includes these messages:\n"
-        last_few_messages = context.recent_messages[-3:] if len(context.recent_messages) > 3 else context.recent_messages
-        
-        for msg in last_few_messages:
-            sender = user_name if msg.get("senderId") == context.user.get("id") else contact_name
-            message_text = msg.get("text", "(media message)")
-            prompt += f"- {sender}: {message_text}\n"
-    else:
-        prompt += " This will be their first conversation."
+        prompt += "\nRecent conversation context:\n"
+        for msg in context.recent_messages[-5:]:  # Only include up to 5 most recent messages
+            sender = "User" if msg.get('senderId') == context.user.get('id') else "Contact"
+            content = msg.get('content', '')
+            prompt += f"{sender}: {content}\n"
+    
+    # Final request
+    prompt += (
+        "\nPlease generate 5 conversation starters that would be appropriate and engaging. "
+        "Make sure each starter is categorized as one of: greeting, question, religious, general. "
+        "Format your response as a JSON object with a key called 'starters' that contains an array of objects, "
+        "where each object has 'text' and 'category' fields."
+    )
     
     return prompt
 
 def get_default_starters(context: ConversationContext) -> List[Dict[str, str]]:
     """Fallback default starters in case OpenAI API call fails"""
-    is_scholar = context.contact.get("isScholar", False)
-    
-    default_starters = [
-        {"text": "Assalamu alaikum, how are you today?", "category": "greeting"},
-        {"text": "Hope you're having a blessed day!", "category": "greeting"},
-        {"text": "What have you been up to lately?", "category": "general"}
-    ]
+    is_scholar = context.contact.get('isScholar', False)
     
     if is_scholar:
-        default_starters.extend([
-            {"text": "I had a question about Islamic jurisprudence if you have time.", "category": "religious"},
-            {"text": "Could you recommend some good books on Islamic theology?", "category": "question"}
-        ])
+        # Default starters for scholars
+        return [
+            {
+                "text": "Assalamu Alaikum, how are you doing today?",
+                "category": "greeting"
+            },
+            {
+                "text": "I've been reflecting on Surah Al-Fatiha recently. Do you have any insights about its deeper meanings?",
+                "category": "religious"
+            },
+            {
+                "text": "What topic have you been researching or teaching about lately?",
+                "category": "question"
+            },
+            {
+                "text": "Can you recommend any books or resources for better understanding Islamic ethics?",
+                "category": "religious"
+            },
+            {
+                "text": "I hope you and your family are in good health and spirits.",
+                "category": "general"
+            }
+        ]
     else:
-        default_starters.extend([
-            {"text": "Would you like to meet up sometime this week?", "category": "question"},
-            {"text": "Have you heard about the new community event?", "category": "general"}
-        ])
-    
-    return default_starters
+        # Default starters for regular contacts
+        return [
+            {
+                "text": "Hey there! How's your day going?",
+                "category": "greeting"
+            },
+            {
+                "text": "What have you been up to lately?",
+                "category": "question"
+            },
+            {
+                "text": "I saw something interesting today that reminded me of you.",
+                "category": "general"
+            },
+            {
+                "text": "Do you have any plans for the weekend?",
+                "category": "question"
+            },
+            {
+                "text": "I was just thinking about our last conversation.",
+                "category": "general"
+            }
+        ]
