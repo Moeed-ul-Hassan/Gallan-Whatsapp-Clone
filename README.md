@@ -12,7 +12,7 @@ It also echoes the spirit of *Gallan*, a Punjabi word for conversations — keep
 
 ## ✨ Preview
 
-https://github.com/yourusername/connext/assets/preview-chat-demo.gif  
+https://github.com/Moeed-ul-Hassan/connext/assets/preview-chat-demo.gif  
 *Instant messaging in action — with smooth delivery ticks and clean UI*
 
 ![Chat UI Demo](assets/chat-preview.gif)
