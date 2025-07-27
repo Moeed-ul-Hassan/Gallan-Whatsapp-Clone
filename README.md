@@ -1,77 +1,56 @@
-# Gallan - Modern Messaging App
+# Connext - Modern Messaging App
 
-Gallan is a modern, feature-rich messaging application designed for seamless communication. The name "Gallan" is derived from a Punjabi term that means "conversations" or "to talk," reflecting the app's core purpose of fostering meaningful interactions. The application is a WhatsApp clone with most of the features of the original app.
+![Connext Banner](assets/banner-dark.png)
 
-## Features
+Connext is a modern, feature-rich messaging application designed for seamless communication.  
+The name **Connext** is a blend of *connect* and *next*, symbolizing the future of conversations and meaningful digital interactions.  
+It also echoes the spirit of *Gallan*, a Punjabi word for conversations — keeping the roots of real talk alive.
 
-- **Real-Time Messaging**: Send and receive messages instantly
-- **Beautiful WhatsApp-like UI**: Authentic dark theme design with smooth animations and transitions
-- **Responsive Layout**: Works perfectly on both mobile and desktop devices
-- **Message Status Tracking**: See when messages are sent, delivered, and read
-- **Data Persistence**: Supports both in-memory storage and MongoDB database
-- **Pop-in/Pop-out Animations**: Engaging and dynamic user experience
-- **Desktop Application**: Available as both web and desktop application
+> ⚡ A full WhatsApp clone with sleek animations, real-time messaging, and a desktop app built with Electron.
 
-## Tech Stack
+---
 
-- **Frontend**: React with TypeScript
-- **Styling**: Tailwind CSS with ShadCN UI components
-- **State Management**: React Query for data fetching and caching
-- **Form Validation**: React Hook Form with Zod
-- **Routing**: Wouter for lightweight routing
-- **Backend**: Express.js server with RESTful API
-- **Database**: MongoDB integration for persistent storage
-- **Desktop Support**: Electron.js for cross-platform desktop application
+## ✨ Preview
 
-## Getting Started
+https://github.com/yourusername/connext/assets/preview-chat-demo.gif  
+*Instant messaging in action — with smooth delivery ticks and clean UI*
+
+![Chat UI Demo](assets/chat-preview.gif)
+
+---
+
+## 🔥 Features
+
+- ✅ **Real-Time Messaging** – Powered by WebSockets (or long-polling fallback)
+- 🌑 **WhatsApp-like UI** – Authentic dark theme, polished layout
+- 📱 **Responsive** – Optimized for mobile, tablet, and desktop
+- 📤 **Message Status Tracking** – Sent, delivered, and read indicators
+- 💾 **Data Persistence** – MongoDB + In-Memory fallback
+- 🌀 **Pop-in Animations** – Snappy transitions across screens
+- 🖥️ **Desktop App Support** – Electron-based installable app
+
+---
+
+## ⚙️ Tech Stack
+
+| Layer        | Tech                                                  |
+|--------------|--------------------------------------------------------|
+| **Frontend** | React (TypeScript), Tailwind CSS, ShadCN UI            |
+| **State**    | React Query                                            |
+| **Forms**    | React Hook Form + Zod                                  |
+| **Routing**  | Wouter                                                 |
+| **Backend**  | Express.js REST API                                    |
+| **Database** | MongoDB (via Mongoose)                                 |
+| **Desktop**  | Electron.js                                            |
+
+---
+
+## 🚀 Getting Started
 
 ### Web Version
-1. Clone the repository
-2. Install dependencies with `npm install`
-3. Start the development server with `npm run dev`
-4. Navigate to the provided local URL
-5. Login with the demo user (username: `demo-user`, password: `password123`)
 
-### Desktop Version
-1. Build the desktop application with `bash build-electron-app.sh`
-2. Find the executable in the `releases` directory
-3. Install and run the application
-4. Login with the demo user (username: `demo-user`, password: `password123`)
-
-### MongoDB Configuration
-To use MongoDB for persistent storage:
-1. Set up a MongoDB database (MongoDB Atlas or local)
-2. Add your MongoDB connection string as the `MONGODB_URI` environment variable
-3. Restart the application to use MongoDB instead of in-memory storage
-
-## Usage
-
-1. Register a new account or login with existing credentials
-2. Start new conversations from the "New Chat" option
-3. Send messages and track their delivery status
-4. View and update your profile settings
-5. Access additional options from the menu
-
-## UI Features
-
-- Official WhatsApp dark theme with authentic color scheme (#00a884 green)
-- Smooth animations for user interactions
-- Consistent design language matching WhatsApp Web
-- Responsive design that works on mobile, tablet, and desktop
-- Interactive elements with visual feedback
-
-## Demo Account
-
-A demo user is automatically created for testing purposes:
-- **Username**: demo-user
-- **Password**: password123
-
-Additional contacts with Arabic status messages are also included.
-
-## Credits
-
-Made by Zylox, Coded by Moeed Mirza
-
-## License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
+```bash
+git clone https://github.com/Moeed-ul-Hassan/connext.git
+cd connext
+npm install
+npm run dev
